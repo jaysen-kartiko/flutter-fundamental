@@ -7,6 +7,7 @@ void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -75,10 +76,49 @@ class MyApp extends StatelessWidget {
                   buildStatCard('1', 'State', Icons.sync),
                 ],
               ),
+            GreetingCard(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+class GreetingCard extends StatefulWidget {
+  const GreetingCard({super.key});
+
+  @override
+  State<GreetingCard> createState() => _GreetingCardState();
+}
+
+class _GreetingCardState extends State<GreetingCard> {
+  final TextEditingController controller = TextEditingController();
+  String message = 'Belum ada pesan';
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('$studentId - $studentName'),
+        TextField(controller: controller,),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              message = controller.text.trim().isEmpty
+                  ? 'Input masih kosong'
+                  : controller.text.trim();
+            });
+          },
+          child: const Text('Tampilkan'),
+        ),
+        Text(message),
+      ],
     );
   }
 }
