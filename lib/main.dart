@@ -10,23 +10,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Widget buildStatCard(String value, String label, IconData icon) {
-    return Expanded(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              Icon(icon),
-              const SizedBox(height: 6),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(label),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +52,11 @@ class MyApp extends StatelessWidget {
                 ],
               ),
               Row(
-                children: [
-                  buildStatCard('8', 'Widget', Icons.widgets),
-                  buildStatCard('4', 'Layout', Icons.view_quilt),
-                  buildStatCard('1', 'State', Icons.sync),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  Column(children: [Text('8'), Text('Widget')]),
+                  Column(children: [Text('4'), Text('Layout')]),
+                  Column(children: [Text('1'), Text('State')]),
                 ],
               ),
             ],
@@ -82,3 +66,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
