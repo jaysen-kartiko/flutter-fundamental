@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'dart:convert';
+
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
-    'assets/data/student_data.json'
+    'assets/data/student_dataa.json',
   );
   return jsonDecode(jsonString) as Map<String, dynamic>;
 }
@@ -12,22 +14,18 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
-
 void main() {
   runApp(const MyApp());
 }
 
-Widget buildProfileDetail (Map<String, dynamic> student){
+Widget buildProfileDetail(Map<String, dynamic> student) {
   final data = student;
   return Card(
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        children: [
-          Text("Nama: ${data['name']}"),
-          Text("NIM: ${data['nim']}"),
-        ],
+        children: [Text("Nama: ${data['name']}"), Text("NIM: ${data['nim']}")],
       ),
     ),
   );
@@ -42,7 +40,11 @@ Widget buildCoursesList(List<dynamic> courses) {
         final item = data[index];
         return ListTile(
           leading: Icon(
-            item['status'] == "done" ? Icons.check_circle : item['status'] == 'active' ? Icons.run_circle : Icons.calendar_month_rounded,
+            item['status'] == "done"
+                ? Icons.check_circle
+                : item['status'] == 'active'
+                ? Icons.run_circle
+                : Icons.calendar_month_rounded,
           ),
           title: Text(item['title'] as String),
           subtitle: Text(item['code'] as String),
@@ -70,51 +72,60 @@ class ProfileCardState extends State<ProfileCard> {
   late Future<Map<String, dynamic>> studentFuture;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    studentFuture = loadStudentData(); 
+    studentFuture = loadStudentData();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: studentFuture, 
+      future: studentFuture,
       builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.hasError){
+        if (snapshot.hasError) {
           return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
         }
 
         final data = snapshot.data!;
         final student = data['student'] as Map<String, dynamic>;
         final courses = data['courses'] as List<dynamic>;
-      
-       final int totalCourses = courses.length;
-        final int doneCourses = courses.where((c) => c['status'] == 'done').length;
-        final double progressPercent = totalCourses > 0 ? (doneCourses / totalCourses) * 100 : 0.0;
-      
-      return Column(
+
+        final int totalCourses = courses.length;
+        final int doneCourses = courses
+            .where((c) => c['status'] == 'done')
+            .length;
+        final double progressPercent = totalCourses > 0
+            ? (doneCourses / totalCourses) * 100
+            : 0.0;
+
+        return Column(
           children: [
             buildProfileDetail(student),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircleAvatar(backgroundImage: AssetImage('assets/images/profile.jpg')),
+                const CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/profile.jpg'),
+                ),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text("Flutter UI Fundamental", style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("Pertemuan 4", style: TextStyle(color: Colors.grey))
+                    Text(
+                      "Flutter UI Fundamental",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text("Pertemuan 4", style: TextStyle(color: Colors.grey)),
                   ],
-                )
+                ),
               ],
             ),
             const SizedBox(height: 12),
-Row(
+            Row(
               children: [
                 Expanded(
                   child: Card(
@@ -123,11 +134,18 @@ Row(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          const Text("Total Courses", style: TextStyle(color: Colors.grey)),
+                          const Text(
+                            "Total Courses",
+                            style: TextStyle(color: Colors.grey),
+                          ),
                           const SizedBox(height: 8),
                           Text(
-                            "$totalCourses", 
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+                            "$totalCourses",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
                           ),
                         ],
                       ),
@@ -141,11 +159,18 @@ Row(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          const Text("Progress Done", style: TextStyle(color: Colors.grey)),
+                          const Text(
+                            "Progress Done",
+                            style: TextStyle(color: Colors.grey),
+                          ),
                           const SizedBox(height: 8),
                           Text(
-                            "${progressPercent.toStringAsFixed(0)}%", 
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                            "${progressPercent.toStringAsFixed(0)}%",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
                           ),
                         ],
                       ),
@@ -155,11 +180,14 @@ Row(
               ],
             ),
             const SizedBox(height: 12),
-                    Text("Daftar Materi", style: TextStyle(fontWeight: FontWeight.bold)),
-          buildCoursesList(courses)
-        ],
-      );
-      }
+            Text(
+              "Daftar Materi",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            buildCoursesList(courses),
+          ],
+        );
+      },
     );
   }
 }
@@ -174,13 +202,13 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue,
-          title: Text('Learning Dashboard', style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold))
+          title: Text(
+            'Learning Dashboard',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          body: 
-          ProfileCard(),
-          )
-      );
+        ),
+        body: ProfileCard(),
+      ),
+    );
   }
 }
-
-
