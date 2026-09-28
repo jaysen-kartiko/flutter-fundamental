@@ -1,166 +1,186 @@
 import 'package:flutter/material.dart';
-
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
-    'assets/data/student_data.json',
+    'assets/data/student_data.json'
   );
   return jsonDecode(jsonString) as Map<String, dynamic>;
 }
-
 
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
 
-class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
-
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
+void main() {
+  runApp(const MyApp());
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+Widget buildProfileDetail (Map<String, dynamic> student){
+  final data = student;
+  return Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text("Nama: ${data['name']}"),
+          Text("NIM: ${data['nim']}"),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget buildCoursesList(List<dynamic> courses) {
+  final data = courses;
+  return Expanded(
+    child: ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final item = data[index];
+        return ListTile(
+          leading: Icon(
+            item['status'] == "done" ? Icons.check_circle : item['status'] == 'active' ? Icons.run_circle : Icons.calendar_month_rounded,
+          ),
+          title: Text(item['title'] as String),
+          subtitle: Text(item['code'] as String),
+          trailing: Text(
+            "${item['credits']} SKS",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+class ProfileCard extends StatefulWidget {
+  const new({super.key});
+
+  @override
+  State<ProfileCard> createState() => ProfileCardState();
+}
+
+class ProfileCardState extends State<ProfileCard> {
   late Future<Map<String, dynamic>> studentFuture;
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    studentFuture = loadStudentData();
+    studentFuture = loadStudentData(); 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Learning Dashboard')),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: studentFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
-          }
+    return FutureBuilder(
+      future: studentFuture, 
+      builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError){
+          return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
+        }
 
-          final data = snapshot.data!;
-          final student = data['student'] as Map<String, dynamic>;
-          final courses = data['courses'] as List<dynamic>;
-
-          return Column(
-            children: [
-              ListTile(
-                title: Text(student['name'] as String),
-                subtitle: Text(student['nim'] as String),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final course = courses[index] as Map<String, dynamic>;
-                    return ListTile(
-                      title: Text(course['title'] as String),
-                      subtitle: Text(course['code'] as String),
-                    );
-                  },
+        final data = snapshot.data!;
+        final student = data['student'] as Map<String, dynamic>;
+        final courses = data['courses'] as List<dynamic>;
+      
+       final int totalCourses = courses.length;
+        final int doneCourses = courses.where((c) => c['status'] == 'done').length;
+        final double progressPercent = totalCourses > 0 ? (doneCourses / totalCourses) * 100 : 0.0;
+      
+      return Column(
+          children: [
+            buildProfileDetail(student),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(backgroundImage: AssetImage('assets/images/profile.jpg')),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text("Flutter UI Fundamental", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("Pertemuan 4", style: TextStyle(color: Colors.grey))
+                  ],
+                )
+              ],
+            ),
+            const SizedBox(height: 12),
+Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    color: Colors.blue.shade50,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          const Text("Total Courses", style: TextStyle(color: Colors.grey)),
+                          const SizedBox(height: 8),
+                          Text(
+                            "$totalCourses", 
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
-      ),
+                Expanded(
+                  child: Card(
+                    color: Colors.green.shade50,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          const Text("Progress Done", style: TextStyle(color: Colors.grey)),
+                          const SizedBox(height: 8),
+                          Text(
+                            "${progressPercent.toStringAsFixed(0)}%", 
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+                    Text("Daftar Materi", style: TextStyle(fontWeight: FontWeight.bold)),
+          buildCoursesList(courses)
+        ],
+      );
+      }
     );
   }
-}
-
-final List<Map<String, dynamic>> topics = [
-  {'title': 'Git & GitHub', 'subtitle': 'Version control', 'done': true},
-  {'title': 'Dart Fundamentals', 'subtitle': 'Language basics', 'done': true},
-  {
-    'title': 'Flutter UI Fundamentals',
-    'subtitle': 'Widgets & layout',
-    'done': false,
-  },
-  {
-    'title': '$studentId - $studentName',
-    'subtitle': 'Pemilik aplikasi',
-    'done': false,
-  },
-];
-
-final int completed = topics.where((item) => item['done'] == true).length;
-
-void main() {
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Widget buildStatCard(String value, String label, IconData icon) {
-    return Expanded(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              Icon(icon),
-              const SizedBox(height: 6),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(label),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DashboardPage(),
-    );
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: Text('Learning Dashboard', style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold))
+          ),
+          body: 
+          ProfileCard(),
+          )
+      );
   }
 }
 
-class GreetingCard extends StatefulWidget {
-  const GreetingCard({super.key});
 
-  @override
-  State<GreetingCard> createState() => _GreetingCardState();
-}
-
-class _GreetingCardState extends State<GreetingCard> {
-  final TextEditingController controller = TextEditingController();
-  String message = 'Belum ada pesan';
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('$studentId - $studentName'),
-        TextField(controller: controller),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              message = controller.text.trim().isEmpty
-                  ? 'Input masih kosong'
-                  : controller.text.trim();
-            });
-          },
-          child: const Text('Tampilkan'),
-        ),
-        Text(message),
-      ],
-    );
-  }
-}
