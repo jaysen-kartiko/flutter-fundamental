@@ -3,10 +3,24 @@ import 'package:flutter/material.dart';
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
+final List<Map<String, dynamic>> topics = [
+  {'title': 'Git & GitHub', 'subtitle': 'Version control', 'done': true},
+  {'title': 'Dart Fundamentals', 'subtitle': 'Language basics', 'done': true},
+  {
+    'title': 'Flutter UI Fundamentals',
+    'subtitle': 'Widgets & layout',
+    'done': false,
+  },
+  {
+    'title': '$studentId - $studentName',
+    'subtitle': 'Pemilik aplikasi',
+    'done': false,
+  },
+];
+
 void main() {
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,54 +50,80 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(title: const Text('Flutter UI Fundamentals')),
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 42,
-                backgroundImage: const AssetImage('assets/images/profile.jpg'),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text('$studentId - $studentName'),
-                        const SizedBox(height: 8),
-                        const Text('Flutter UI Fundamentals'),
-                      ],
+          // child: Column(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     //   CircleAvatar(
+          //     //     radius: 42,
+          //     //     backgroundImage: const AssetImage('assets/images/profile.jpg'),
+          //     //   ),
+          //     //   const SizedBox(height: 12),
+          //     //   Padding(
+          //     //     padding: const EdgeInsets.all(16),
+          //     //     child: Card(
+          //     //       child: Padding(
+          //     //         padding: const EdgeInsets.all(16),
+          //     //         child: Column(
+          //     //           children: [
+          //     //             Text('$studentId - $studentName'),
+          //     //             const SizedBox(height: 8),
+          //     //             const Text('Flutter UI Fundamentals'),
+          //     //           ],
+          //     //         ),
+          //     //       ),
+          //     //     ),
+          //     //   ),
+
+          //     //   const SizedBox(height: 8),
+          //     //   const Row(
+          //     //     mainAxisSize: MainAxisSize.min,
+          //     //     children: [
+          //     //       Icon(Icons.phone_android),
+          //     //       SizedBox(width: 8),
+          //     //       Text('Mobile programming Student'),
+          //     //     ],
+          //     //   ),
+          //     //   Row(
+          //     //     children: [
+          //     //       buildStatCard('8', 'Widget', Icons.widgets),
+          //     //       buildStatCard('4', 'Layout', Icons.view_quilt),
+          //     //       buildStatCard('1', 'State', Icons.sync),
+          //     //     ],
+          //     //   ),
+          //     // GreetingCard(),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Text('$studentId - $studentName'),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: topics.length,
+                      itemBuilder: (context, index) {
+                        final item = topics[index];
+                        return ListTile(
+                          leading: Icon(
+                            item['done'] == true
+                                ? Icons.check_circle
+                                : Icons.circle_outlined,
+                          ),
+                          title: Text(item['title'] as String),
+                          subtitle: Text(item['subtitle'] as String),
+                        );
+                      },
                     ),
                   ),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-              const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.phone_android),
-                  SizedBox(width: 8),
-                  Text('Mobile programming Student'),
                 ],
               ),
-              Row(
-                children: [
-                  buildStatCard('8', 'Widget', Icons.widgets),
-                  buildStatCard('4', 'Layout', Icons.view_quilt),
-                  buildStatCard('1', 'State', Icons.sync),
-                ],
-              ),
-            GreetingCard(),
-            ],
-          ),
+        //     ],
+        //   ),
         ),
       ),
     );
   }
 }
+
 class GreetingCard extends StatefulWidget {
   const GreetingCard({super.key});
 
@@ -106,7 +146,7 @@ class _GreetingCardState extends State<GreetingCard> {
     return Column(
       children: [
         Text('$studentId - $studentName'),
-        TextField(controller: controller,),
+        TextField(controller: controller),
         ElevatedButton(
           onPressed: () {
             setState(() {
