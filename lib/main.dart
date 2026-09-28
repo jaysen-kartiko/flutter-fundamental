@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+
+Future<Map<String, dynamic>> loadStudentData() async {
+  final jsonString = await rootBundle.loadString(
+    'assets/data/student_data.json',
+  );
+  return jsonDecode(jsonString) as Map<String, dynamic>;
+}
+
+
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
