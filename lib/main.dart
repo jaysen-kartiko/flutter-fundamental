@@ -18,6 +18,8 @@ final List<Map<String, dynamic>> topics = [
   },
 ];
 
+final int completed = topics.where((item) => item['done'] == true).length;
+
 void main() {
   runApp(const MyApp());
 }
@@ -91,33 +93,45 @@ class MyApp extends StatelessWidget {
           //     //     ],
           //     //   ),
           //     // GreetingCard(),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text('$studentId - $studentName'),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: topics.length,
-                      itemBuilder: (context, index) {
-                        final item = topics[index];
-                        return ListTile(
-                          leading: Icon(
-                            item['done'] == true
-                                ? Icons.check_circle
-                                : Icons.circle_outlined,
-                          ),
-                          title: Text(item['title'] as String),
-                          subtitle: Text(item['subtitle'] as String),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+          child: Column(
+            children: [
+              Text('$completed dari ${topics.length} topik selesai'),
+
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text('$studentId - $studentName'),
               ),
-        //     ],
-        //   ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: topics.length,
+                  itemBuilder: (context, index) {
+                    final item = topics[index];
+
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      child: ListTile(
+                        leading: Icon(
+                          item['done'] == true
+                              ? Icons.check_circle
+                              : Icons.schedule,
+                        ),
+                        title: Text(item['title'] as String),
+                        subtitle: Text(item['subtitle'] as String),
+                        trailing: Text(
+                          item['done'] == true ? 'Selesai' : 'Belum',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          //     ],
+          //   ),
         ),
       ),
     );
