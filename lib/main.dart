@@ -14,6 +14,67 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
+
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  late Future<Map<String, dynamic>> studentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    studentFuture = loadStudentData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Learning Dashboard')),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: studentFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
+          }
+
+          final data = snapshot.data!;
+          final student = data['student'] as Map<String, dynamic>;
+          final courses = data['courses'] as List<dynamic>;
+
+          return Column(
+            children: [
+              ListTile(
+                title: Text(student['name'] as String),
+                subtitle: Text(student['nim'] as String),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: courses.length,
+                  itemBuilder: (context, index) {
+                    final course = courses[index] as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(course['title'] as String),
+                      subtitle: Text(course['code'] as String),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
 final List<Map<String, dynamic>> topics = [
   {'title': 'Git & GitHub', 'subtitle': 'Version control', 'done': true},
   {'title': 'Dart Fundamentals', 'subtitle': 'Language basics', 'done': true},
@@ -60,91 +121,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Flutter UI Fundamentals')),
-        body: Center(
-          // child: Column(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     //   CircleAvatar(
-          //     //     radius: 42,
-          //     //     backgroundImage: const AssetImage('assets/images/profile.jpg'),
-          //     //   ),
-          //     //   const SizedBox(height: 12),
-          //     //   Padding(
-          //     //     padding: const EdgeInsets.all(16),
-          //     //     child: Card(
-          //     //       child: Padding(
-          //     //         padding: const EdgeInsets.all(16),
-          //     //         child: Column(
-          //     //           children: [
-          //     //             Text('$studentId - $studentName'),
-          //     //             const SizedBox(height: 8),
-          //     //             const Text('Flutter UI Fundamentals'),
-          //     //           ],
-          //     //         ),
-          //     //       ),
-          //     //     ),
-          //     //   ),
-
-          //     //   const SizedBox(height: 8),
-          //     //   const Row(
-          //     //     mainAxisSize: MainAxisSize.min,
-          //     //     children: [
-          //     //       Icon(Icons.phone_android),
-          //     //       SizedBox(width: 8),
-          //     //       Text('Mobile programming Student'),
-          //     //     ],
-          //     //   ),
-          //     //   Row(
-          //     //     children: [
-          //     //       buildStatCard('8', 'Widget', Icons.widgets),
-          //     //       buildStatCard('4', 'Layout', Icons.view_quilt),
-          //     //       buildStatCard('1', 'State', Icons.sync),
-          //     //     ],
-          //     //   ),
-          //     // GreetingCard(),
-          child: Column(
-            children: [
-              Text('$completed dari ${topics.length} topik selesai'),
-
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text('$studentId - $studentName'),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: topics.length,
-                  itemBuilder: (context, index) {
-                    final item = topics[index];
-
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      child: ListTile(
-                        leading: Icon(
-                          item['done'] == true
-                              ? Icons.check_circle
-                              : Icons.schedule,
-                        ),
-                        title: Text(item['title'] as String),
-                        subtitle: Text(item['subtitle'] as String),
-                        trailing: Text(
-                          item['done'] == true ? 'Selesai' : 'Belum',
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-          //     ],
-          //   ),
-        ),
-      ),
+      home: DashboardPage(),
     );
   }
 }
