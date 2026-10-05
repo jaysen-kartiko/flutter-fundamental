@@ -18,6 +18,11 @@ void main() {
   runApp(const MyApp());
 }
 
+Widget buildBox(String text) => Container(
+      color: Colors.blue.shade100,
+      child: Center(child: Text(text)),
+    );
+
 Widget buildProfileDetail(Map<String, dynamic> student) {
   final data = student;
   return Card(
@@ -65,10 +70,18 @@ class CompactLayout extends StatelessWidget {
   const CompactLayout({super.key});
   @override
   Widget build(BuildContext context) {
-    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      const Text('Compact $studentName - $studentId', style: TextStyle(color: Colors.red)),
-      const Icon(Icons.phone, color: Colors.red), 
-    ]));
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Compact $studentName - $studentId',
+            style: TextStyle(color: Colors.red),
+          ),
+          const Icon(Icons.phone, color: Colors.red),
+        ],
+      ),
+    );
   }
 }
 
@@ -76,10 +89,18 @@ class MediumLayout extends StatelessWidget {
   const MediumLayout({super.key});
   @override
   Widget build(BuildContext context) {
-    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      const Text('Medium $studentName - $studentId', style: TextStyle(color: Colors.orange)),
-      const Icon(Icons.tablet, color: Colors.orange), 
-    ]));
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Medium $studentName - $studentId',
+            style: TextStyle(color: Colors.orange),
+          ),
+          const Icon(Icons.tablet, color: Colors.orange),
+        ],
+      ),
+    );
   }
 }
 
@@ -87,10 +108,18 @@ class ExpandedLayout extends StatelessWidget {
   const ExpandedLayout({super.key});
   @override
   Widget build(BuildContext context) {
-    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      const Text('Expanded $studentName - $studentId', style: TextStyle(color: Colors.green)),
-      const Icon(Icons.desktop_mac, color: Colors.green), 
-    ]));
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Expanded $studentName - $studentId',
+            style: TextStyle(color: Colors.green),
+          ),
+          const Icon(Icons.desktop_mac, color: Colors.green),
+        ],
+      ),
+    );
   }
 }
 
@@ -141,6 +170,8 @@ class ProfileCardState extends State<ProfileCard> {
         final size = MediaQuery.of(context).size;
         final orientation = MediaQuery.of(context).orientation;
 
+        final List<String> skills = ['Pemrograman', 'Editing', 'photography', 'music', 'videography', 'learn'];
+
         return Column(
           children: [
             Container(
@@ -164,7 +195,18 @@ class ProfileCardState extends State<ProfileCard> {
                 ],
               ),
             ),
-            
+            Row(
+              children: [
+                Expanded(flex: 2, child: buildBox('A')),
+                const SizedBox(width: 8),
+                Expanded(child: buildBox('B')),
+              ],
+            ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: skills.map((e) => Chip(label: Text(e))).toList(),
+            ),
             buildProfileDetail(student),
             const SizedBox(height: 8),
             Row(
