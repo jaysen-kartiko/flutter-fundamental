@@ -155,6 +155,12 @@ class ProfileCardState extends State<ProfileCard> {
           return Center(child: Text('Gagal memuat data: ${snapshot.error}'));
         }
 
+        int columnsFor(double width) {
+    if (width < 600) return 1;
+    if (width < 840) return 2;
+    return 3;
+  }
+
         final data = snapshot.data!;
         final student = data['student'] as Map<String, dynamic>;
         final courses = data['courses'] as List<dynamic>;
@@ -174,6 +180,7 @@ class ProfileCardState extends State<ProfileCard> {
 
         return Column(
           children: [
+            
             Container(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -207,6 +214,22 @@ class ProfileCardState extends State<ProfileCard> {
               runSpacing: 8,
               children: skills.map((e) => Chip(label: Text(e))).toList(),
             ),
+            Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columnsFor(constraints.maxWidth),
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 2.5,
+                      ),
+                      itemCount: courses.length,
+                      itemBuilder: (context, index) => CourseCard(course: courses[index]),
+                    );
+                  },
+                ),
+              ),
             buildProfileDetail(student),
             const SizedBox(height: 8),
             Row(
@@ -312,6 +335,35 @@ class MyApp extends StatelessWidget {
           ),
         ),
         body: ProfileCard(),
+      ),
+    );
+  }
+}
+
+class CourseCard extends StatelessWidget {
+  final Map<String, dynamic> course;
+  const CourseCard({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              course['title'] as String,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text('Kode: ${course['code']}', style: const TextStyle(color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }
