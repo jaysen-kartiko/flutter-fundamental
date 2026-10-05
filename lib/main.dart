@@ -105,12 +105,28 @@ class ProfileCardState extends State<ProfileCard> {
             ? (doneCourses / totalCourses) * 100
             : 0.0;
 
+        final size = MediaQuery.of(context).size;
+        final orientation = MediaQuery.of(context).orientation;
+
         return Column(
           children: [
             Container(
               width: 500,
               padding: const EdgeInsets.all(16),
-              child: Text('$studentId - $studentName'),
+              child: Column(
+                children: [
+                  Text('Width: ${size.width.toStringAsFixed(0)}'),
+                  Text('Height: ${size.height.toStringAsFixed(0)}'),
+                  Text('Orientation: $orientation'),
+                  Builder(builder: ((context) {
+                    if(size.width.toInt() < 600){
+                      return Text('Compact');
+                    } else{
+                      return Text('wide');
+                    }
+                  })),
+                ],
+              ),
             ),
             buildProfileDetail(student),
             const SizedBox(height: 8),
