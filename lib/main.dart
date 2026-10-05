@@ -67,9 +67,22 @@ class CourseDetailPage extends StatelessWidget {
       appBar: AppBar(title: Text("Detail ${course['title']} ")),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("${course['title']} - ${course['status']} - ${course['code']} - $studentId - $studentName"),
+            Text(
+              "${course['title']} - ${course['status']} - ${course['code']}",
+            ),
+            const SizedBox(height: 16),
+
             ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text('Pilih/Favorite'),
+            ),
+
+            const SizedBox(height: 8),
+            TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -88,13 +101,33 @@ Widget buildCoursesList(List<dynamic> courses) {
     child: ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
+         void bukaHalamanDetail(
+          BuildContext context,
+         Map<String, dynamic> course,
+        ) async {
+          // Menunggu hasil dari halaman detail (menggunakan await)
+          final result = await Navigator.push<bool>(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CourseDetailPage(course: course),
+            ),
+          );
+
+          if (result == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Kursus ${course["title"]} berhasil ditandai sebagai Favorit!',
+                ),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        }
         final item = data[index];
         return ListTile(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => CourseDetailPage(course: item)),
-            );
+            bukaHalamanDetail(context, item);
           },
           leading: Icon(
             item['status'] == "done"
@@ -232,6 +265,7 @@ class ProfileCardState extends State<ProfileCard> {
           'videography',
           'learn',
         ];
+       
 
         return Column(
           children: [
