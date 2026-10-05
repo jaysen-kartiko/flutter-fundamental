@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
-
+import 'ScrollableCard.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<Map<String, dynamic>> loadStudentData() async {
@@ -14,8 +14,20 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
+// void main() {
+//   runApp(const MyApp());
+// }
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: SafeArea(
+          child: ScrollableCard(),
+        ),
+      ),
+    ),
+  );
 }
 
 Widget buildBox(String text) => Container(
@@ -141,10 +153,6 @@ class ProfileCardState extends State<ProfileCard> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    double height = size.height;
-    double width = size.width;
-    print("value $height - $width");
     return FutureBuilder(
       future: studentFuture,
       builder: (context, snapshot) {
