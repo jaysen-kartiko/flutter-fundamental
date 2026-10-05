@@ -61,6 +61,39 @@ Widget buildCoursesList(List<dynamic> courses) {
   );
 }
 
+class CompactLayout extends StatelessWidget {
+  const CompactLayout({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+      const Text('Compact $studentName - $studentId', style: TextStyle(color: Colors.red)),
+      const Icon(Icons.phone, color: Colors.red), 
+    ]));
+  }
+}
+
+class MediumLayout extends StatelessWidget {
+  const MediumLayout({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+      const Text('Medium $studentName - $studentId', style: TextStyle(color: Colors.orange)),
+      const Icon(Icons.tablet, color: Colors.orange), 
+    ]));
+  }
+}
+
+class ExpandedLayout extends StatelessWidget {
+  const ExpandedLayout({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+      const Text('Expanded $studentName - $studentId', style: TextStyle(color: Colors.green)),
+      const Icon(Icons.desktop_mac, color: Colors.green), 
+    ]));
+  }
+}
+
 class ProfileCard extends StatefulWidget {
   const new({super.key});
 
@@ -111,23 +144,27 @@ class ProfileCardState extends State<ProfileCard> {
         return Column(
           children: [
             Container(
-              width: 500,
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Text('Width: ${size.width.toStringAsFixed(0)}'),
                   Text('Height: ${size.height.toStringAsFixed(0)}'),
                   Text('Orientation: $orientation'),
-                  Builder(builder: ((context) {
-                    if(size.width.toInt() < 600){
-                      return Text('Compact');
-                    } else{
-                      return Text('wide');
-                    }
-                  })),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < 600) {
+                        return const CompactLayout();
+                      } else if (constraints.maxWidth < 840) {
+                        return const MediumLayout();
+                      } else {
+                        return const ExpandedLayout();
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
+            
             buildProfileDetail(student),
             const SizedBox(height: 8),
             Row(
