@@ -79,6 +79,10 @@ class ProfileCardState extends State<ProfileCard> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
+    print("value $height - $width");
     return FutureBuilder(
       future: studentFuture,
       builder: (context, snapshot) {
@@ -103,6 +107,11 @@ class ProfileCardState extends State<ProfileCard> {
 
         return Column(
           children: [
+            Container(
+              width: 500,
+              padding: const EdgeInsets.all(16),
+              child: Text('$studentId - $studentName'),
+            ),
             buildProfileDetail(student),
             const SizedBox(height: 8),
             Row(
