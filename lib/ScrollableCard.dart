@@ -13,7 +13,6 @@ class ScrollableCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 1. KARTU SEDERHANA
           Card(
             elevation: 2,
             child: Padding(
@@ -34,14 +33,12 @@ class ScrollableCard extends StatelessWidget {
           
           const SizedBox(height: 20),
 
-          // 2. FORM SEDERHANA
           const Text(
             'Formulir',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
 
-          // Kotak Teks 1
           const TextField(
             decoration: InputDecoration(
               labelText: 'Masukkan Nama Panggilan',
@@ -60,7 +57,6 @@ class ScrollableCard extends StatelessWidget {
           
           const SizedBox(height: 12),
 
-          // Kotak Teks 2
           const TextField(
             decoration: InputDecoration(
               labelText: 'Masukkan Cita-cita',
@@ -70,7 +66,6 @@ class ScrollableCard extends StatelessWidget {
           
           const SizedBox(height: 16),
 
-          // Tombol Kirim
           ElevatedButton(
             onPressed: () {},
             child: const Text('Simpan'),

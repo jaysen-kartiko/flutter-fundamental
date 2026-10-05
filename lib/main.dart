@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ui_fundamentals/HomePage.dart';
 
 import 'dart:convert';
 import 'ScrollableCard.dart';
@@ -18,17 +19,22 @@ const String studentId = '2415051028';
 //   runApp(const MyApp());
 // }
 void main() {
-  runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SafeArea(
-          child: ScrollableCard(),
-        ),
-      ),
-    ),
-  );
+  runApp(const MaterialApp(
+    home: HomePage()
+  ));
 }
+// void main() {
+//   runApp(
+//     const MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: Scaffold(
+//         body: SafeArea(
+//           child: ScrollableCard(),
+//         ),
+//       ),
+//     ),
+//   );
+// }
 
 Widget buildBox(String text) => Container(
       color: Colors.blue.shade100,
