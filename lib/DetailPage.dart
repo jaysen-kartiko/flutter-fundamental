@@ -16,6 +16,6 @@ class DetailPage extends StatelessWidget {
           child: const Text('Go back!'),
         ),
       ),
-    );;
+    );
   }
 }

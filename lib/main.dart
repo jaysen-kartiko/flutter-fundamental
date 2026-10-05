@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ui_fundamentals/HomePage.dart';
 
 import 'dart:convert';
+
 import 'ScrollableCard.dart';
+
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<Map<String, dynamic>> loadStudentData() async {
@@ -15,14 +17,14 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
-// void main() {
-//   runApp(const MyApp());
-// }
 void main() {
-  runApp(const MaterialApp(
-    home: HomePage()
-  ));
+  runApp(const MyApp());
 }
+// void main() {
+//   runApp(const MaterialApp(
+//     home: HomePage()
+//   ));
+// }
 // void main() {
 //   runApp(
 //     const MaterialApp(
@@ -37,9 +39,9 @@ void main() {
 // }
 
 Widget buildBox(String text) => Container(
-      color: Colors.blue.shade100,
-      child: Center(child: Text(text)),
-    );
+  color: Colors.blue.shade100,
+  child: Center(child: Text(text)),
+);
 
 Widget buildProfileDetail(Map<String, dynamic> student) {
   final data = student;
@@ -54,6 +56,32 @@ Widget buildProfileDetail(Map<String, dynamic> student) {
   );
 }
 
+class CourseDetailPage extends StatelessWidget {
+  final Map<String, dynamic> course;
+
+  const CourseDetailPage({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Detail ${course['title']} ")),
+      body: Center(
+        child: Column(
+          children: [
+            Text("${course['title']} - ${course['status']} - ${course['code']} - $studentId - $studentName"),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Go back!'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 Widget buildCoursesList(List<dynamic> courses) {
   final data = courses;
   return Expanded(
@@ -62,6 +90,12 @@ Widget buildCoursesList(List<dynamic> courses) {
       itemBuilder: (context, index) {
         final item = data[index];
         return ListTile(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => CourseDetailPage(course: item)),
+            );
+          },
           leading: Icon(
             item['status'] == "done"
                 ? Icons.check_circle
@@ -170,10 +204,10 @@ class ProfileCardState extends State<ProfileCard> {
         }
 
         int columnsFor(double width) {
-    if (width < 600) return 1;
-    if (width < 840) return 2;
-    return 3;
-  }
+          if (width < 600) return 1;
+          if (width < 840) return 2;
+          return 3;
+        }
 
         final data = snapshot.data!;
         final student = data['student'] as Map<String, dynamic>;
@@ -190,11 +224,17 @@ class ProfileCardState extends State<ProfileCard> {
         final size = MediaQuery.of(context).size;
         final orientation = MediaQuery.of(context).orientation;
 
-        final List<String> skills = ['Pemrograman', 'Editing', 'photography', 'music', 'videography', 'learn'];
+        final List<String> skills = [
+          'Pemrograman',
+          'Editing',
+          'photography',
+          'music',
+          'videography',
+          'learn',
+        ];
 
         return Column(
           children: [
-            
             Container(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -229,21 +269,22 @@ class ProfileCardState extends State<ProfileCard> {
               children: skills.map((e) => Chip(label: Text(e))).toList(),
             ),
             Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: columnsFor(constraints.maxWidth),
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 2.5,
-                      ),
-                      itemCount: courses.length,
-                      itemBuilder: (context, index) => CourseCard(course: courses[index]),
-                    );
-                  },
-                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: columnsFor(constraints.maxWidth),
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 2.5,
+                    ),
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) =>
+                        CourseCard(course: courses[index]),
+                  );
+                },
               ),
+            ),
             buildProfileDetail(student),
             const SizedBox(height: 8),
             Row(
@@ -375,7 +416,10 @@ class CourseCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
-            Text('Kode: ${course['code']}', style: const TextStyle(color: Colors.grey)),
+            Text(
+              'Kode: ${course['code']}',
+              style: const TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       ),
