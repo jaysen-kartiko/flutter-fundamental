@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_fundamentals/HomePage.dart';
+
 import 'Home.dart';
 import 'CoursesPage.dart';
 import 'ProfilePage.dart';
+import 'per_6_debugging.dart';
 
 import 'dart:convert';
 
@@ -20,15 +22,24 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
+void main() {
+  runApp(
+    const MaterialApp(
+      home:
+            KasusDScreen(),
+    ),
+  );
+}
+
 // void main() {
 //   runApp(const MyApp());
 // }
 
 // main.dart
 
-void main() {
-  runApp(const NavigationApp());
-}
+// void main() {
+//   runApp(const NavigationApp());
+// }
 
 class NavigationApp extends StatelessWidget {
   const NavigationApp({super.key});
@@ -85,8 +96,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       labelType: NavigationRailLabelType.all,
       destinations: const [
         NavigationRailDestination(icon: Icon(Icons.home), label: Text('Home')),
-        NavigationRailDestination(icon: Icon(Icons.school), label: Text('Courses')),
-        NavigationRailDestination(icon: Icon(Icons.person), label: Text('Profile')),
+        NavigationRailDestination(
+          icon: Icon(Icons.school),
+          label: Text('Courses'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.person),
+          label: Text('Profile'),
+        ),
       ],
     );
   }
@@ -95,7 +112,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aplikasi Pembelajaran'),
+        title: const Text('Course Explorer'),
         backgroundColor: Colors.blue,
       ),
       body: LayoutBuilder(
@@ -121,11 +138,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 }
-// void main() {
-//   runApp(const MaterialApp(
-//     home: HomePage()
-//   ));
-// }
+
 // void main() {
 //   runApp(
 //     const MaterialApp(
@@ -202,16 +215,14 @@ Widget buildCoursesList(List<dynamic> courses) {
     child: ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
-         void bukaHalamanDetail(
+        void bukaHalamanDetail(
           BuildContext context,
-         Map<String, dynamic> course,
+          Map<String, dynamic> course,
         ) async {
           // Menunggu hasil dari halaman detail (menggunakan await)
           final result = await Navigator.push<bool>(
             context,
-            MaterialPageRoute(
-              builder: (_) => CourseDetailPage(course: course),
-            ),
+            MaterialPageRoute(builder: (_) => CourseDetailPage(course: course)),
           );
 
           if (result == true) {
@@ -225,6 +236,7 @@ Widget buildCoursesList(List<dynamic> courses) {
             );
           }
         }
+
         final item = data[index];
         return ListTile(
           onTap: () {
@@ -366,7 +378,6 @@ class ProfileCardState extends State<ProfileCard> {
           'videography',
           'learn',
         ];
-       
 
         return Column(
           children: [
@@ -444,7 +455,6 @@ class ProfileCardState extends State<ProfileCard> {
             const SizedBox(height: 12),
             Row(
               children: [
-                
                 Expanded(
                   child: Card(
                     color: Colors.blue.shade50,
@@ -526,7 +536,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
         body: ProfileCard(),
-        
       ),
     );
   }

@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
   String? _submittedNim;
   String? _submittedComment;
   
-  bool _isLoading = false; // State untuk simulasi loading
+  bool _isLoading = false; 
 
   @override
   void initState() {
@@ -50,8 +50,8 @@ class _HomeState extends State<Home> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // Tutup dialog
-                _processSubmission(); // Lanjut proses
+                Navigator.pop(context);
+                _processSubmission(); 
               },
               child: const Text('Ya, Kirim'),
             ),

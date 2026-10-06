@@ -45,7 +45,7 @@ class _CoursesPageState extends State<CoursesPage> {
     }
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -70,17 +70,44 @@ class _CoursesPageState extends State<CoursesPage> {
           if (courses.isEmpty) {
             return const Center(child: Text('Tidak ada kursus tersedia.'));
           }
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              bool isCompact = constraints.maxWidth < 600;
 
-          return ListView.builder(
-            itemCount: courses.length,
-            itemBuilder: (context, index) {
-              final courseItem = courses[index] as Map<String, dynamic>;
-              return CourseCard(
-                course: courseItem,
-                onTap: (courseData) {
-                  _bukaHalamanDetail(context, courseData);
-                },
-              );
+              if (isCompact) {
+                return ListView.builder(
+                  itemCount: courses.length,
+                  itemBuilder: (context, index) {
+                    final courseItem = courses[index] as Map<String, dynamic>;
+                    return CourseCard(
+                      course: courseItem,
+                      onTap: (courseData) {
+                        _bukaHalamanDetail(context, courseData);
+                      },
+                    );
+                  },
+                );
+              } else {
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16.0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: constraints.maxWidth > 900 ? 3 : 2,
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
+                    childAspectRatio: 1.6, 
+                  ),
+                  itemCount: courses.length,
+                  itemBuilder: (context, index) {
+                    final courseItem = courses[index] as Map<String, dynamic>;
+                    return CourseCard(
+                      course: courseItem,
+                      onTap: (courseData) {
+                        _bukaHalamanDetail(context, courseData);
+                      },
+                    );
+                  },
+                );
+              }
             },
           );
         },
