@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_fundamentals/HomePage.dart';
+import 'Home.dart';
+import 'CoursesPage.dart';
+import 'ProfilePage.dart';
 
 import 'dart:convert';
 
@@ -17,8 +20,70 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
+// void main() {
+//   runApp(const MyApp());
+// }
+
+// main.dart
+
 void main() {
-  runApp(const MyApp());
+  runApp(const NavigationApp());
+}
+
+class NavigationApp extends StatelessWidget {
+  const NavigationApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MainNavigationScreen(),
+    );
+  }
+}
+
+// Menggunakan StatefulWidget untuk menyimpan selectedIndex (Syarat No. 2)
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
+
+  @override
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+}
+
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int currentIndex = 0;
+
+  // Daftar halaman yang sesuai dengan urutan NavigationDestination
+  final List<Widget> _pages = [
+    const Home(),
+    const CoursesPage(),
+    const ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Aplikasi Pembelajaran'),
+        backgroundColor: Colors.blue,
+      ),
+      // Menampilkan halaman yang sesuai dengan index aktif (Syarat No. 3)
+      body: _pages[currentIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.school), label: 'Courses'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
 }
 // void main() {
 //   runApp(const MaterialApp(
@@ -343,6 +408,7 @@ class ProfileCardState extends State<ProfileCard> {
             const SizedBox(height: 12),
             Row(
               children: [
+                
                 Expanded(
                   child: Card(
                     color: Colors.blue.shade50,
@@ -424,6 +490,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         body: ProfileCard(),
+        
       ),
     );
   }
