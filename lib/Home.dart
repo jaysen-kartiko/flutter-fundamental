@@ -18,6 +18,8 @@ class _HomeState extends State<Home> {
   String? _submittedName;
   String? _submittedNim;
   String? _submittedComment;
+  
+  bool _isLoading = false; // State untuk simulasi loading
 
   @override
   void initState() {
@@ -36,12 +38,47 @@ class _HomeState extends State<Home> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _submittedName = _nameController.text;
-        _submittedNim = _nimController.text;
-        _submittedComment = _commentController.text;
-      });
-      
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Konfirmasi'),
+          content: const Text('Apakah Anda yakin ingin mengirim feedback ini?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Tutup dialog
+                _processSubmission(); // Lanjut proses
+              },
+              child: const Text('Ya, Kirim'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _processSubmission() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    setState(() {
+      _submittedName = _nameController.text;
+      _submittedNim = _nimController.text;
+      _submittedComment = _commentController.text;
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data berhasil disimpan')),
+      );
       FocusScope.of(context).unfocus();
     }
   }
@@ -123,11 +160,19 @@ class _HomeState extends State<Home> {
                 },
               ),
               const SizedBox(height: 20),
-
               ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(Icons.send),
-                label: const Text('Kirim Feedback'),
+                onPressed: _isLoading ? null : _submitForm,
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.send),
+                label: Text(_isLoading ? 'Mengirim...' : 'Kirim Feedback'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
