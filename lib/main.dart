@@ -42,7 +42,6 @@ class NavigationApp extends StatelessWidget {
   }
 }
 
-// Menggunakan StatefulWidget untuk menyimpan selectedIndex (Syarat No. 2)
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
@@ -53,12 +52,44 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int currentIndex = 0;
 
-  // Daftar halaman yang sesuai dengan urutan NavigationDestination
   final List<Widget> _pages = [
-    const Home(),
+    const HomePage(),
     const CoursesPage(),
     const ProfilePage(),
   ];
+
+  Widget buildNavigationBar() {
+    return NavigationBar(
+      selectedIndex: currentIndex,
+      onDestinationSelected: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
+      destinations: const [
+        NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+        NavigationDestination(icon: Icon(Icons.school), label: 'Courses'),
+        NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+      ],
+    );
+  }
+
+  Widget buildNavigationRail() {
+    return NavigationRail(
+      selectedIndex: currentIndex,
+      onDestinationSelected: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
+      labelType: NavigationRailLabelType.all,
+      destinations: const [
+        NavigationRailDestination(icon: Icon(Icons.home), label: Text('Home')),
+        NavigationRailDestination(icon: Icon(Icons.school), label: Text('Courses')),
+        NavigationRailDestination(icon: Icon(Icons.person), label: Text('Profile')),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,20 +98,25 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         title: const Text('Aplikasi Pembelajaran'),
         backgroundColor: Colors.blue,
       ),
-      // Menampilkan halaman yang sesuai dengan index aktif (Syarat No. 3)
-      body: _pages[currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 840) {
+            return Scaffold(
+              body: _pages[currentIndex],
+              bottomNavigationBar: buildNavigationBar(),
+            );
+          }
+
+          return Scaffold(
+            body: Row(
+              children: [
+                buildNavigationRail(),
+                const VerticalDivider(width: 1),
+                Expanded(child: _pages[currentIndex]),
+              ],
+            ),
+          );
         },
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.school), label: 'Courses'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
-        ],
       ),
     );
   }
