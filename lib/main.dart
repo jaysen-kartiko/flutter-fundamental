@@ -53,7 +53,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(),
+    const Home(),
     const CoursesPage(),
     const ProfilePage(),
   ];
