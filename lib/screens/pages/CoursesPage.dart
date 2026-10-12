@@ -5,6 +5,8 @@ import '../../core/models/course.dart';
 import '../widgets/course_card.dart';
 import '../course_detail_page.dart';
 import 'FavoritePage.dart';
+import '../../StudentInfo.dart';
+
 class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
 
@@ -20,20 +22,6 @@ class CoursesPage extends StatelessWidget {
     final courseProvider = context.watch<CourseProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Kursus Saya (Favorit: ${courseProvider.favorites.length})'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.favorite),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const FavoritesPage()),
-              );
-            },
-          ),
-        ],
-      ),
       body: Builder(
         builder: (context) {
           if (courseProvider.isLoading) {
@@ -55,41 +43,148 @@ class CoursesPage extends StatelessWidget {
           return LayoutBuilder(
             builder: (context, constraints) {
               bool isCompact = constraints.maxWidth < 600;
+              int crossAxisCount = isCompact ? 1 : 2;
 
-              if (isCompact) {
-                return ListView.builder(
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final courseItem = courses[index];
-                    return CourseCard(
-                      course: courseItem,
-                      onTap: (courseData) {
-                        _bukaHalamanDetail(context, courseData);
-                      },
-                    );
-                  },
-                );
-              } else {
-                return GridView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: constraints.maxWidth > 900 ? 3 : 2,
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                    childAspectRatio: 1.6,
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Card(
+                            elevation: 0,
+                            color: Colors.blue.withOpacity(0.08),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                ' $studentId - $studentName',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Card(
+                                  elevation: 0,
+                                  color: Colors.blue.withOpacity(0.08),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Courses',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          '${courses.length}',
+                                          style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const FavoritesPage()),
+                                    );
+                                  },
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Card(
+                                    elevation: 0,
+                                    color: Colors.blue.withOpacity(0.08),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Favorites',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            '${courseProvider.favorites.length}',
+                                            style: const TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
                   ),
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final courseItem = courses[index];
-                    return CourseCard(
-                      course: courseItem,
-                      onTap: (courseData) {
-                        _bukaHalamanDetail(context, courseData);
+                  SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 8.0,
+                      childAspectRatio: 3.2, 
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final courseItem = courses[index];
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isCompact ? 0 : 8.0,
+                          ),
+                          child: CourseCard(
+                            course: courseItem,
+                            onTap: (courseData) {
+                              _bukaHalamanDetail(context, courseData);
+                            },
+                          ),
+                        );
                       },
-                    );
-                  },
-                );
-              }
+                      childCount: courses.length,
+                    ),
+                  ),
+                ],
+              );
             },
           );
         },
