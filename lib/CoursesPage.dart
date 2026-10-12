@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'core/providers/course_state.dart';
 
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
@@ -21,7 +22,7 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-  final ValueNotifier<Set<String>> _favoriteCodes = ValueNotifier<Set<String>>({});
+  final CourseState _courseState = CourseState();
   late Future<Map<String, dynamic>> studentFuture;
 
   @override
@@ -32,7 +33,7 @@ class _CoursesPageState extends State<CoursesPage> {
 
   @override
   void dispose() {
-    _favoriteCodes.dispose();
+    _courseState.dispose();
     super.dispose();
   }
 
@@ -46,9 +47,7 @@ class _CoursesPageState extends State<CoursesPage> {
     );
 
     if (result == true && mounted) {
-      final updated = Set<String>.from(_favoriteCodes.value);
-      updated.add(course['code']);
-      _favoriteCodes.value = updated;
+      _courseState.toggleFavorite(course['code']);
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -64,10 +63,10 @@ class _CoursesPageState extends State<CoursesPage> {
   Widget _buildCourseItem(Map<String, dynamic> courseItem) {
     final String code = courseItem['code'];
 
-    return ValueListenableBuilder<Set<String>>(
-      valueListenable: _favoriteCodes,
-      builder: (context, favorites, child) {
-        final bool isFav = favorites.contains(code);
+    return ListenableBuilder(
+      listenable: _courseState,
+      builder: (context, child) {
+        final bool isFav = _courseState.favorites.contains(code);
 
         return CourseCard(
           course: courseItem,
@@ -76,13 +75,7 @@ class _CoursesPageState extends State<CoursesPage> {
             _bukaHalamanDetail(context, courseData);
           },
           onFavoriteChanged: () {
-            final updated = Set<String>.from(_favoriteCodes.value);
-            if (isFav) {
-              updated.remove(code);
-            } else {
-              updated.add(code);
-            }
-            _favoriteCodes.value = updated;
+            _courseState.toggleFavorite(code);
           },
         );
       },
@@ -93,10 +86,10 @@ class _CoursesPageState extends State<CoursesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: ValueListenableBuilder<Set<String>>(
-          valueListenable: _favoriteCodes,
-          builder: (context, favorites, child) {
-            return Text('Daftar Kursus Saya (Favorit: ${favorites.length})');
+        title: ListenableBuilder(
+          listenable: _courseState,
+          builder: (context, child) {
+            return Text('Daftar Kursus Saya (Favorit: ${_courseState.favorites.length})');
           },
         ),
       ),
