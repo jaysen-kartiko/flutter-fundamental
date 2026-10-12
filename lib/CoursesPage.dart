@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'core/providers/course_provider.dart';
 import 'core/models/course.dart';
+import 'core/services/course_service.dart';
 
-Future<List<Course>> loadStudentCourses() async {
-  final jsonString = await rootBundle.loadString(
-    'assets/data/student_data.json',
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CourseProvider(),
+      child: const MaterialApp(home: CoursesPage()),
+    ),
   );
-  final data = jsonDecode(jsonString) as Map<String, dynamic>;
-  final list = data['courses'] as List<dynamic>;
-  return list.map((e) => Course.fromJson(e as Map<String, dynamic>)).toList();
 }
 
 class CoursesPage extends StatefulWidget {
@@ -22,12 +21,13 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
+  final CourseService _courseService = CourseService();
   late Future<List<Course>> coursesFuture;
 
   @override
   void initState() {
     super.initState();
-    coursesFuture = loadStudentCourses();
+    coursesFuture = _courseService.loadCourses();
   }
 
   void _bukaHalamanDetail(
