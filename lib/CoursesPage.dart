@@ -54,23 +54,22 @@ class _CoursesPageState extends State<CoursesPage> {
     }
   }
 
-  // Helper untuk menghindari duplikasi pembuatan CourseCard
   Widget _buildCourseItem(Map<String, dynamic> courseItem) {
     final String code = courseItem['code'];
     final bool isFav = _favoriteCodes.contains(code);
 
     return CourseCard(
       course: courseItem,
-      isFavorite: isFav, 
+      isFavorite: isFav,
       onTap: (courseData) {
         _bukaHalamanDetail(context, courseData);
       },
-      onFavoriteChanged: (newStatus) {
+      onFavoriteChanged: () {
         setState(() {
-          if (newStatus) {
-            _favoriteCodes.add(code);
-          } else {
+          if (isFav) {
             _favoriteCodes.remove(code);
+          } else {
+            _favoriteCodes.add(code);
           }
         });
       },
@@ -145,7 +144,8 @@ class CourseCard extends StatelessWidget {
   final Map<String, dynamic> course;
   final Function(Map<String, dynamic>) onTap;
   final bool isFavorite;
-  final ValueChanged<bool> onFavoriteChanged; 
+  final VoidCallback onFavoriteChanged;
+
   const CourseCard({
     super.key,
     required this.course,
@@ -219,9 +219,7 @@ class CourseCard extends StatelessWidget {
                   isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: isFavorite ? Colors.red : Colors.grey,
                 ),
-                onPressed: () {
-                  onFavoriteChanged(!isFavorite);
-                },
+                onPressed: onFavoriteChanged,
               ),
             ],
           ),
