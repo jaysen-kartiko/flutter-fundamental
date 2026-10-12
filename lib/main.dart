@@ -22,24 +22,22 @@ Future<Map<String, dynamic>> loadStudentData() async {
 const String studentName = 'Jaysen Natanael Kartiko';
 const String studentId = '2415051028';
 
-void main() {
-  runApp(
-    const MaterialApp(
-      home:
-            KasusDScreen(),
-    ),
-  );
-}
+// void main() {
+//   runApp(
+//     const MaterialApp(
+//       home:
+//             KasusDScreen(),
+//     ),
+//   );
+// }
 
 // void main() {
 //   runApp(const MyApp());
 // }
 
-// main.dart
-
-// void main() {
-//   runApp(const NavigationApp());
-// }
+void main() {
+  runApp(const NavigationApp());
+}
 
 class NavigationApp extends StatelessWidget {
   const NavigationApp({super.key});
