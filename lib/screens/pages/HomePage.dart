@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'StudentInfo.dart';
+import '../../StudentInfo.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
