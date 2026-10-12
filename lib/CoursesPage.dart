@@ -2,25 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/providers/course_provider.dart';
 import 'core/models/course.dart';
-import 'core/services/course_service.dart';
-import 'core/repositories/course_repository.dart';
 
-class CoursesPage extends StatefulWidget {
+class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
-
-  @override
-  State<CoursesPage> createState() => _CoursesPageState();
-}
-
-class _CoursesPageState extends State<CoursesPage> {
-  late Future<List<Course>> coursesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    final repository = context.read<CourseRepository>();
-    coursesFuture = repository.getCourses();
-  }
 
   void _bukaHalamanDetail(
     BuildContext context,
@@ -31,7 +15,7 @@ class _CoursesPageState extends State<CoursesPage> {
       MaterialPageRoute(builder: (_) => CourseDetailPage(course: course)),
     );
 
-    if (result == true && mounted) {
+    if (result == true && context.mounted) {
       context.read<CourseProvider>().toggleFavorite(course.code);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -53,20 +37,19 @@ class _CoursesPageState extends State<CoursesPage> {
       appBar: AppBar(
         title: Text('Daftar Kursus Saya (Favorit: ${courseProvider.favorites.length})'),
       ),
-      body: FutureBuilder<List<Course>>(
-        future: coursesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: Builder(
+        builder: (context) {
+          if (courseProvider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError) {
+          if (courseProvider.error != null) {
             return Center(
-              child: Text('Gagal memuat data kursus: ${snapshot.error}'),
+              child: Text('Gagal memuat data kursus: ${courseProvider.error}'),
             );
           }
 
-          final courses = snapshot.data!;
+          final courses = courseProvider.courses;
 
           if (courses.isEmpty) {
             return const Center(child: Text('Tidak ada kursus tersedia.'));

@@ -43,13 +43,15 @@ void main() {
   final courseService = CourseService();
   final courseRepository = CourseRepository(courseService);
 
-  runApp(
+runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CourseProvider()),
+        ChangeNotifierProvider(
+          create: (_) => CourseProvider(courseRepository)..loadCourses(),
+        ),
         Provider<CourseRepository>.value(value: courseRepository),
       ],
-      child: const MyApp(),
+      child: const MaterialApp(home: CoursesPage()),
     ),
   );
 }
