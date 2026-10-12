@@ -3,12 +3,15 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'core/providers/course_provider.dart';
+import 'core/models/course.dart';
 
-Future<Map<String, dynamic>> loadStudentData() async {
+Future<List<Course>> loadStudentCourses() async {
   final jsonString = await rootBundle.loadString(
     'assets/data/student_data.json',
   );
-  return jsonDecode(jsonString) as Map<String, dynamic>;
+  final data = jsonDecode(jsonString) as Map<String, dynamic>;
+  final list = data['courses'] as List<dynamic>;
+  return list.map((e) => Course.fromJson(e as Map<String, dynamic>)).toList();
 }
 
 class CoursesPage extends StatefulWidget {
@@ -19,17 +22,17 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-  late Future<Map<String, dynamic>> studentFuture;
+  late Future<List<Course>> coursesFuture;
 
   @override
   void initState() {
     super.initState();
-    studentFuture = loadStudentData();
+    coursesFuture = loadStudentCourses();
   }
 
   void _bukaHalamanDetail(
     BuildContext context,
-    Map<String, dynamic> course,
+    Course course,
   ) async {
     final result = await Navigator.push<bool>(
       context,
@@ -37,12 +40,12 @@ class _CoursesPageState extends State<CoursesPage> {
     );
 
     if (result == true && mounted) {
-      context.read<CourseProvider>().toggleFavorite(course['code']);
+      context.read<CourseProvider>().toggleFavorite(course.code);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Kursus ${course["title"]} berhasil ditandai sebagai Favorit!',
+            'Kursus ${course.title} berhasil ditandai sebagai Favorit!',
           ),
           duration: const Duration(seconds: 2),
         ),
@@ -58,8 +61,8 @@ class _CoursesPageState extends State<CoursesPage> {
       appBar: AppBar(
         title: Text('Daftar Kursus Saya (Favorit: ${courseProvider.favorites.length})'),
       ),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: studentFuture,
+      body: FutureBuilder<List<Course>>(
+        future: coursesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -71,8 +74,7 @@ class _CoursesPageState extends State<CoursesPage> {
             );
           }
 
-          final data = snapshot.data!;
-          final courses = data['courses'] as List<dynamic>;
+          final courses = snapshot.data!;
 
           if (courses.isEmpty) {
             return const Center(child: Text('Tidak ada kursus tersedia.'));
@@ -86,8 +88,7 @@ class _CoursesPageState extends State<CoursesPage> {
                 return ListView.builder(
                   itemCount: courses.length,
                   itemBuilder: (context, index) {
-                    final courseItem =
-                        courses[index] as Map<String, dynamic>;
+                    final courseItem = courses[index];
                     return CourseCard(
                       course: courseItem,
                       onTap: (courseData) {
@@ -107,8 +108,7 @@ class _CoursesPageState extends State<CoursesPage> {
                   ),
                   itemCount: courses.length,
                   itemBuilder: (context, index) {
-                    final courseItem =
-                        courses[index] as Map<String, dynamic>;
+                    final courseItem = courses[index];
                     return CourseCard(
                       course: courseItem,
                       onTap: (courseData) {
@@ -127,8 +127,8 @@ class _CoursesPageState extends State<CoursesPage> {
 }
 
 class CourseCard extends StatelessWidget {
-  final Map<String, dynamic> course;
-  final Function(Map<String, dynamic>) onTap;
+  final Course course;
+  final Function(Course) onTap;
 
   const CourseCard({
     super.key,
@@ -147,7 +147,7 @@ class CourseCard extends StatelessWidget {
           builder: (context) => AlertDialog(
             title: const Text('Informasi Kursus'),
             content: Text(
-              'Kode: ${item['code']}\nStatus: ${item['status']}\nSKS: ${item['credits']}',
+              'Kode: ${item.code}\nStatus: ${item.status}\nSKS: ${item.credits}',
             ),
             actions: [
               TextButton(
@@ -165,9 +165,9 @@ class CourseCard extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                item['status'] == "done"
+                item.status == "done"
                     ? Icons.check_circle
-                    : item['status'] == 'active'
+                    : item.status == 'active'
                     ? Icons.run_circle
                     : Icons.calendar_month_rounded,
                 color: Colors.blue,
@@ -178,19 +178,19 @@ class CourseCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item['title'] as String,
+                      item.title,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text('Kode: ${item['code']}'),
+                    Text('Kode: ${item.code}'),
                   ],
                 ),
               ),
               Text(
-                "${item['credits']} SKS",
+                "${item.credits} SKS",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
@@ -198,14 +198,14 @@ class CourseCard extends StatelessWidget {
               ),
               Consumer<CourseProvider>(
                 builder: (context, courseProvider, child) {
-                  final bool isFavorite = courseProvider.favorites.contains(item['code']);
+                  final bool isFavorite = courseProvider.favorites.contains(item.code);
                   return IconButton(
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: isFavorite ? Colors.red : Colors.grey,
                     ),
                     onPressed: () {
-                      context.read<CourseProvider>().toggleFavorite(item['code']);
+                      context.read<CourseProvider>().toggleFavorite(item.code);
                     },
                   );
                 },
@@ -219,20 +219,20 @@ class CourseCard extends StatelessWidget {
 }
 
 class CourseDetailPage extends StatelessWidget {
-  final Map<String, dynamic> course;
+  final Course course;
 
   const CourseDetailPage({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Detail ${course['title']}")),
+      appBar: AppBar(title: Text("Detail ${course.title}")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${course['title']}\n${course['status']}\n${course['code']}",
+              "${course.title}\n${course.status}\n${course.code}",
             ),
             const SizedBox(height: 16),
             ElevatedButton(
