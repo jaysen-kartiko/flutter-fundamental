@@ -21,13 +21,19 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-  final Set<String> _favoriteCodes = {};
+  final ValueNotifier<Set<String>> _favoriteCodes = ValueNotifier<Set<String>>({});
   late Future<Map<String, dynamic>> studentFuture;
 
   @override
   void initState() {
     super.initState();
     studentFuture = loadStudentData();
+  }
+
+  @override
+  void dispose() {
+    _favoriteCodes.dispose();
+    super.dispose();
   }
 
   void _bukaHalamanDetail(
@@ -40,9 +46,10 @@ class _CoursesPageState extends State<CoursesPage> {
     );
 
     if (result == true && mounted) {
-      setState(() {
-        _favoriteCodes.add(course['code']);
-      });
+      final updated = Set<String>.from(_favoriteCodes.value);
+      updated.add(course['code']);
+      _favoriteCodes.value = updated;
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -56,22 +63,28 @@ class _CoursesPageState extends State<CoursesPage> {
 
   Widget _buildCourseItem(Map<String, dynamic> courseItem) {
     final String code = courseItem['code'];
-    final bool isFav = _favoriteCodes.contains(code);
 
-    return CourseCard(
-      course: courseItem,
-      isFavorite: isFav,
-      onTap: (courseData) {
-        _bukaHalamanDetail(context, courseData);
-      },
-      onFavoriteChanged: () {
-        setState(() {
-          if (isFav) {
-            _favoriteCodes.remove(code);
-          } else {
-            _favoriteCodes.add(code);
-          }
-        });
+    return ValueListenableBuilder<Set<String>>(
+      valueListenable: _favoriteCodes,
+      builder: (context, favorites, child) {
+        final bool isFav = favorites.contains(code);
+
+        return CourseCard(
+          course: courseItem,
+          isFavorite: isFav,
+          onTap: (courseData) {
+            _bukaHalamanDetail(context, courseData);
+          },
+          onFavoriteChanged: () {
+            final updated = Set<String>.from(_favoriteCodes.value);
+            if (isFav) {
+              updated.remove(code);
+            } else {
+              updated.add(code);
+            }
+            _favoriteCodes.value = updated;
+          },
+        );
       },
     );
   }
@@ -80,7 +93,12 @@ class _CoursesPageState extends State<CoursesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daftar Kursus Saya (Favorit: ${_favoriteCodes.length})'),
+        title: ValueListenableBuilder<Set<String>>(
+          valueListenable: _favoriteCodes,
+          builder: (context, favorites, child) {
+            return Text('Daftar Kursus Saya (Favorit: ${favorites.length})');
+          },
+        ),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: studentFuture,
