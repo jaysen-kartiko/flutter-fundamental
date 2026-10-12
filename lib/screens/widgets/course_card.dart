@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/providers/course_provider.dart';
 import '../../core/models/course.dart';
 
-
 class CourseCard extends StatelessWidget {
   final Course course;
   final Function(Course) onTap;
@@ -76,14 +75,14 @@ class CourseCard extends StatelessWidget {
               ),
               Consumer<CourseProvider>(
                 builder: (context, courseProvider, child) {
-                  final bool isFavorite = courseProvider.favorites.contains(item.code);
+                  final bool isFavorite = courseProvider.isFavorite(item.code);
                   return IconButton(
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: isFavorite ? Colors.red : Colors.grey,
                     ),
                     onPressed: () {
-                      context.read<CourseProvider>().toggleFavorite(item.code);
+                      courseProvider.toggleFavorite(item.code);
                     },
                   );
                 },

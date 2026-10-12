@@ -25,6 +25,7 @@ class CourseProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  bool isFavorite(String code) => favorites.contains(code);
 
   void toggleFavorite(String id) {
     if (favorites.contains(id)) {

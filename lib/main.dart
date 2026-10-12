@@ -9,7 +9,7 @@ void main() {
   final courseService = CourseService();
   final courseRepository = CourseRepository(courseService);
 
-runApp(
+  runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
