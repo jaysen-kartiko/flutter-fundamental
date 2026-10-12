@@ -13,6 +13,8 @@ import 'ScrollableCard.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:provider/provider.dart';
 import 'core/providers/course_provider.dart';
+import 'core/services/course_service.dart';
+import 'core/repositories/course_repository.dart';
 
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
@@ -38,9 +40,15 @@ const String studentId = '2415051028';
 // }
 
 void main() {
+  final courseService = CourseService();
+  final courseRepository = CourseRepository(courseService);
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => CourseProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CourseProvider()),
+        Provider<CourseRepository>.value(value: courseRepository),
+      ],
       child: const MyApp(),
     ),
   );

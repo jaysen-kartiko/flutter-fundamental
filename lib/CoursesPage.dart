@@ -3,15 +3,7 @@ import 'package:provider/provider.dart';
 import 'core/providers/course_provider.dart';
 import 'core/models/course.dart';
 import 'core/services/course_service.dart';
-
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => CourseProvider(),
-      child: const MaterialApp(home: CoursesPage()),
-    ),
-  );
-}
+import 'core/repositories/course_repository.dart';
 
 class CoursesPage extends StatefulWidget {
   const CoursesPage({super.key});
@@ -21,13 +13,13 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-  final CourseService _courseService = CourseService();
   late Future<List<Course>> coursesFuture;
 
   @override
   void initState() {
     super.initState();
-    coursesFuture = _courseService.loadCourses();
+    final repository = context.read<CourseRepository>();
+    coursesFuture = repository.getCourses();
   }
 
   void _bukaHalamanDetail(
