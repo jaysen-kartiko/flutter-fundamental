@@ -1,6 +1,16 @@
-# flutter_ui_fundamentals
+# Tanggung Jawab singkat tiap folder
 
-
+- **`lib/`**: Folder utama untuk seluruh kode sumber aplikasi.
+- **`lib/core/`**: Menyimpan logika inti, data, dan fungsionalitas global aplikasi.
+  - **`models/`**: Definisi struktur data / objek (`course.dart`).
+  - **`providers/`**: Pengelola *state* untuk menghubungkan data ke UI.
+  - **`repositories/`**: Perantara penghubung sumber data (lokal/API).
+  - **`services/`**: Layanan komunikasi eksternal (API, database, dll).
+- **`lib/screens/`**: Kumpulan antarmuka (UI) tampilan aplikasi.
+  - **`components/`**: Bagian-bagian penyusun tampilan yang spesifik.
+  - **`pages/`**: Halaman utama aplikasi secara utuh (Home, Profile, dll).
+  - **`widgets/`**: Komponen UI yang dapat digunakan kembali (*reusable*).
+  
 ## Debugging Challange 
 
 Kasus A: hapus notifyListeners() sementara dan amati UI. Kembalikan setelah memahami efeknya.
