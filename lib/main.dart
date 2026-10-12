@@ -11,6 +11,8 @@ import 'dart:convert';
 import 'ScrollableCard.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:provider/provider.dart';
+import 'core/providers/course_provider.dart';
 
 Future<Map<String, dynamic>> loadStudentData() async {
   final jsonString = await rootBundle.loadString(
@@ -36,7 +38,23 @@ const String studentId = '2415051028';
 // }
 
 void main() {
-  runApp(const NavigationApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CourseProvider(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: NavigationApp(),
+    );
+  }
 }
 
 class NavigationApp extends StatelessWidget {
@@ -518,26 +536,26 @@ class ProfileCardState extends State<ProfileCard> {
   }
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text(
-            'Learning Dashboard',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: ProfileCard(),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: Scaffold(
+//         appBar: AppBar(
+//           backgroundColor: Colors.blue,
+//           title: Text(
+//             'Learning Dashboard',
+//             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+//           ),
+//         ),
+//         body: ProfileCard(),
+//       ),
+//     );
+//   }
+// }
 
 class CourseCard extends StatelessWidget {
   final Map<String, dynamic> course;
