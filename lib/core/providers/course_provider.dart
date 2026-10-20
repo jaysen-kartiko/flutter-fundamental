@@ -12,6 +12,7 @@ class CourseProvider extends ChangeNotifier {
   final Set<String> favorites = {};
   bool isLoading = false;
   String? error;
+  bool isSaving = false;
 
   Future<void> loadCourses() async {
     isLoading = true;
@@ -27,17 +28,14 @@ class CourseProvider extends ChangeNotifier {
     }
   }
 
-  bool isSaving = false;
 
   Future<bool> createCourse(Course newCourse) async {
     isSaving = true;
     notifyListeners();
 
     try {
-      // Kirim data via Repository
       await repository.createCourse(newCourse);
 
-      // Refresh list setelah berhasil (mengganti isi list, bukan menambah manual)
       await loadCourses();
       return true;
     } catch (e) {

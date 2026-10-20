@@ -23,7 +23,6 @@ class CourseDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Detail ${course.title}"),
         actions: [
-          // Tombol Edit
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {

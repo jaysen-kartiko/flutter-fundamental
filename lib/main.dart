@@ -5,12 +5,11 @@ import 'core/services/course_api_service.dart';
 import 'core/repositories/course_repository.dart';
 import 'screens/home_page.dart';
 
-const String baseUrl = 'https://6ad720f1f71f154ac487d451.mockapi.io/api/';
 
 void main() {
+const String baseUrl = 'https://6ad720f1f71f154ac487d451.mockapi.io/api/';
 
-  final courseService = CourseApiService(baseUrl);
-  final courseRepository = CourseRepository(courseService);
+  final courseRepository = CourseRepository(CourseApiService(baseUrl));
 
   runApp(
     MultiProvider(
