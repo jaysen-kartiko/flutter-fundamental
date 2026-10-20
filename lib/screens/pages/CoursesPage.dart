@@ -14,7 +14,7 @@ class CoursesPage extends StatelessWidget {
   void _bukaHalamanDetail(BuildContext context, Course course) async {
     await Navigator.push<bool>(
       context,
-      MaterialPageRoute(builder: (_) => CourseDetailPage(course: course)),
+      MaterialPageRoute(builder: (_) => CourseDetailPage(courseId: course.id, course: course)),
     );
   }
 

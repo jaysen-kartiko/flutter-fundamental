@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/course.dart';
 import '../repositories/course_repository.dart';
 
@@ -47,7 +48,23 @@ class CourseProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+Future<bool> updateCourse(String? id, Course updatedCourse) async {
+  isSaving = true;
+  error = null;
+  notifyListeners();
 
+  try {
+    await repository.updateCourse(id, updatedCourse);
+    await loadCourses(); 
+    return true;
+  } catch (e) {
+    error = e.toString();
+    return false;
+  } finally {
+    isSaving = false;
+    notifyListeners();
+  }
+}
   bool isFavorite(String code) => favorites.contains(code);
 
   void toggleFavorite(String id) {
