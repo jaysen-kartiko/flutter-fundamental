@@ -35,6 +35,7 @@ Solusi: Tambahkan pemeriksaan if (!mounted) return; tepat setelah panggilan awai
 
 
 # Per. 7 Tahap 1
+- DUMP ENDPOINT
 - URL Endpoint: https://randomuser.me/api/
 - HTTP Method: GET
 - Status Code: 200
