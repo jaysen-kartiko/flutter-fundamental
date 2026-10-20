@@ -39,7 +39,7 @@ class CourseApiService implements CourseDataSource {
 }
 
 @override
-Future<Course> updateCourse(String? id, Course course) async {
+Future<Course> updateCourse(int? id, Course course) async {
   final response = await http.put(
     Uri.parse('$baseUrl/courses/$id'),
     headers: {'Content-Type': 'application/json'},
@@ -55,7 +55,7 @@ Future<Course> updateCourse(String? id, Course course) async {
   throw Exception('Gagal memperbarui course');
 }
 @override
-Future<void> deleteCourse(String? id) async {
+Future<void> deleteCourse(int? id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/courses/$id'),
     );

@@ -28,7 +28,7 @@ class CourseSupabaseService implements CourseDataSource {
   }
 
 @override
-  Future<void> updateCourse(String? id, Course course) async {
+  Future<void> updateCourse(int? id, Course course) async {
     if (id == null) throw Exception('ID course tidak boleh null');
     
     await _supabase
@@ -38,7 +38,7 @@ class CourseSupabaseService implements CourseDataSource {
   }
 
   @override
-  Future<void> deleteCourse(String? id) async {
+  Future<void> deleteCourse(int? id) async {
     if (id == null) throw Exception('ID course tidak boleh null');
     
     await _supabase

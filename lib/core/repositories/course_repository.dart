@@ -11,7 +11,7 @@ class CourseRepository {
 
   Future<Course> createCourse(Course course) => dataSource.createCourse(course);
 
-  Future<void> updateCourse(String? id, Course course) => dataSource.updateCourse(id, course);
+  Future<void> updateCourse(int? id, Course course) => dataSource.updateCourse(id, course);
 
-  Future<void> deleteCourse(String? id) => dataSource.deleteCourse(id);
+  Future<void> deleteCourse(int? id) => dataSource.deleteCourse(id);
 }

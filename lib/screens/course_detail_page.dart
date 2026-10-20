@@ -6,7 +6,7 @@ import 'pages/editCoursePage.dart';
 
 class CourseDetailPage extends StatelessWidget {
   final Course course;
-  final String? courseId;
+  final int? courseId;
 
   const CourseDetailPage({
     super.key,

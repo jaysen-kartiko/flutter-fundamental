@@ -46,7 +46,7 @@ class CourseProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-Future<bool> updateCourse(String? id, Course updatedCourse) async {
+Future<bool> updateCourse(int? id, Course updatedCourse) async {
   isSaving = true;
   error = null;
   notifyListeners();
@@ -64,7 +64,7 @@ Future<bool> updateCourse(String? id, Course updatedCourse) async {
   }
 }
 
-Future<bool> deleteCourse(String? id, String code) async {
+Future<bool> deleteCourse(int? id, String code) async {
     isSaving = true;
     error = null;
     notifyListeners();
@@ -89,11 +89,11 @@ Future<bool> deleteCourse(String? id, String code) async {
 
   bool isFavorite(String code) => favorites.contains(code);
 
-  void toggleFavorite(String id) {
-    if (favorites.contains(id)) {
-      favorites.remove(id);
+  void toggleFavorite(String code) {
+    if (favorites.contains(code)) {
+      favorites.remove(code);
     } else {
-      favorites.add(id);
+      favorites.add(code);
     }
     notifyListeners();
   }

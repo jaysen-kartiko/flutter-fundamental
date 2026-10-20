@@ -5,7 +5,7 @@ import '../../core/providers/course_provider.dart';
 
 class editCoursePage extends StatefulWidget {
   final Course course;
-  final String? courseId;
+  final int? courseId;
   const editCoursePage({
     super.key,
     required this.course,
