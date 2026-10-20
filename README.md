@@ -105,3 +105,7 @@ Solusi: Tambahkan pemeriksaan if (!mounted) return; tepat setelah panggilan awai
     }
 }
 - Empat Field JSON: Gender, Name, Location, Email
+
+link: https://bblrvfymsemnrgbycemc.supabase.co
+
+publishable sb: sb_publishable_QmcrnhOcKBPXKkGaCXqVfQ_ku6V-JGz
