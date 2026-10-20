@@ -22,7 +22,7 @@ class CourseProvider extends ChangeNotifier {
       error = e.toString();
     } finally {
       isLoading = false;
-      // notifyListeners();
+      notifyListeners();
     }
   }
   bool isFavorite(String code) => favorites.contains(code);

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/providers/course_provider.dart';
 import '../../core/models/course.dart';
 import '../widgets/course_card.dart';
 import '../course_detail_page.dart';
 import 'FavoritePage.dart';
 import '../../StudentInfo.dart';
-
+import '../widgets/error_view.dart';
 class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
 
@@ -29,16 +30,17 @@ class CoursesPage extends StatelessWidget {
           }
 
           if (courseProvider.error != null) {
-            return Center(
-              child: Text('Gagal memuat data kursus: ${courseProvider.error}'),
+            return ErrorView(
+              message: courseProvider.error!,
+              onRetry: courseProvider.loadCourses,
             );
           }
 
-          final courses = courseProvider.courses;
-
-          if (courses.isEmpty) {
-            return const Center(child: Text('Tidak ada kursus tersedia.'));
+          if (courseProvider.courses.isEmpty) {
+            return const Center(child: Text('Data course belum tersedia'));
           }
+          
+          final courses = courseProvider.courses;
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -84,7 +86,8 @@ class CoursesPage extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Courses',
@@ -114,7 +117,8 @@ class CoursesPage extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) => const FavoritesPage()),
+                                        builder: (_) => const FavoritesPage(),
+                                      ),
                                     );
                                   },
                                   borderRadius: BorderRadius.circular(12),
@@ -127,7 +131,8 @@ class CoursesPage extends StatelessWidget {
                                     child: Padding(
                                       padding: const EdgeInsets.all(16.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           const Text(
                                             'Favorites',
@@ -163,25 +168,22 @@ class CoursesPage extends StatelessWidget {
                       crossAxisCount: crossAxisCount,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 8.0,
-                      childAspectRatio: 3.2, 
+                      childAspectRatio: 3.2,
                     ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final courseItem = courses[index];
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: isCompact ? 0 : 8.0,
-                          ),
-                          child: CourseCard(
-                            course: courseItem,
-                            onTap: (courseData) {
-                              _bukaHalamanDetail(context, courseData);
-                            },
-                          ),
-                        );
-                      },
-                      childCount: courses.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final courseItem = courses[index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isCompact ? 0 : 8.0,
+                        ),
+                        child: CourseCard(
+                          course: courseItem,
+                          onTap: (courseData) {
+                            _bukaHalamanDetail(context, courseData);
+                          },
+                        ),
+                      );
+                    }, childCount: courses.length),
                   ),
                 ],
               );
