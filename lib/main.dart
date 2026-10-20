@@ -4,10 +4,7 @@ import 'core/providers/course_provider.dart';
 import 'core/services/course_service.dart';
 import 'core/repositories/course_repository.dart';
 import 'screens/home_page.dart';
-import 'core/services/profile_service.dart';
 void main() {
-
-  fetchProfiles();
 
   final courseService = CourseService();
   final courseRepository = CourseRepository(courseService);
