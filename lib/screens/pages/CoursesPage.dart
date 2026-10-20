@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'addCoursePage.dart';
 import '../../core/providers/course_provider.dart';
 import '../../core/models/course.dart';
 import '../widgets/course_card.dart';
@@ -39,7 +39,7 @@ class CoursesPage extends StatelessWidget {
           if (courseProvider.courses.isEmpty) {
             return const Center(child: Text('Data course belum tersedia'));
           }
-          
+
           final courses = courseProvider.courses;
 
           return LayoutBuilder(
@@ -191,6 +191,15 @@ class CoursesPage extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) =>  AddCoursePage()),
+      );
+    },
+    child: const Icon(Icons.add),
+  ),
     );
   }
 }

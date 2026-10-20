@@ -25,6 +25,29 @@ class CourseProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  bool isSaving = false;
+
+  Future<bool> createCourse(Course newCourse) async {
+    isSaving = true;
+    notifyListeners();
+
+    try {
+      // Kirim data via Repository
+      await repository.createCourse(newCourse);
+
+      // Refresh list setelah berhasil (mengganti isi list, bukan menambah manual)
+      await loadCourses();
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      isSaving = false;
+      notifyListeners();
+    }
+  }
+
   bool isFavorite(String code) => favorites.contains(code);
 
   void toggleFavorite(String id) {
