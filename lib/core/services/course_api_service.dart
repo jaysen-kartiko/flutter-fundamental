@@ -51,5 +51,14 @@ Future<Course> updateCourse(String? id, Course course) async {
 
   throw Exception('Gagal memperbarui course');
 }
+Future<void> deleteCourse(String? id) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/courses/$id'),
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Gagal menghapus course');
+    }
+  }
 }
 

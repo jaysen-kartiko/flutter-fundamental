@@ -65,6 +65,30 @@ Future<bool> updateCourse(String? id, Course updatedCourse) async {
     notifyListeners();
   }
 }
+
+Future<bool> deleteCourse(String? id, String code) async {
+    isSaving = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      await repository.deleteCourse(id);
+
+      if (favorites.contains(code)) {
+        favorites.remove(code);
+      }
+
+      await loadCourses();
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      isSaving = false;
+      notifyListeners();
+    }
+  }
+
   bool isFavorite(String code) => favorites.contains(code);
 
   void toggleFavorite(String id) {
