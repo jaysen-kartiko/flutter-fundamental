@@ -6,15 +6,18 @@ import '../../core/models/course.dart';
 import '../widgets/course_card.dart';
 import '../course_detail_page.dart';
 import 'FavoritePage.dart';
-import '../../StudentInfo.dart';
+import '../../StudentInfo.dart'; // Pastikan StudentInfo diimpor dengan benar
 import '../widgets/error_view.dart';
+
 class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
 
   void _bukaHalamanDetail(BuildContext context, Course course) async {
     await Navigator.push<bool>(
       context,
-      MaterialPageRoute(builder: (_) => CourseDetailPage(courseId: course.id, course: course)),
+      MaterialPageRoute(
+        builder: (_) => CourseDetailPage(courseId: course.id, course: course),
+      ),
     );
   }
 
@@ -61,11 +64,11 @@ class CoursesPage extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(16.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
                               child: Text(
-                                ' $studentId - $studentName',
-                                style: TextStyle(
+                                '$studentId - $studentName',
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                   color: Colors.blueAccent,
@@ -192,14 +195,14 @@ class CoursesPage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) =>  AddCoursePage()),
-      );
-    },
-    child: const Icon(Icons.add),
-  ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddCoursePage()),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

@@ -3,12 +3,11 @@ import 'course_data_source.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CourseSupabaseService implements CourseDataSource {
-  // Menggunakan instance Supabase client
   final SupabaseClient _supabase = Supabase.instance.client;
 
   @override
   Future<List<Course>> getCourses() async {
-    final response = await _supabase.from('courses').select();
+    final response = await _supabase.from('courses').select().order('id');
     
     final List data = response as List;
     return data

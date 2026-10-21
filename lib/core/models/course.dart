@@ -6,7 +6,7 @@ class Course {
   final String status;
 
   Course({
-     this.id,
+    this.id,
     required this.code,
     required this.title,
     required this.credits,
@@ -23,13 +23,18 @@ class Course {
     );
   }
 
-    Map<String, dynamic> toJson() => {
-    'id': id,
-    'code': code,
-    'title': title,
-    'credits': credits,
-    'status': status,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'code': code,
+      'title': title,
+      'credits': credits,
+      'status': status,
+    };
 
+    if (id != null) {
+      data['id'] = id;
+    }
+
+    return data;
+  }
 }
-
