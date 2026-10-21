@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/providers/course_provider.dart';
-import 'core/services/course_api_service.dart';
 import 'core/repositories/course_repository.dart';
 import 'screens/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,7 +15,6 @@ Future<void> main() async {
     publishableKey: dotenv.env['PUBLISHABLE_KEY'] ?? '',
   );
 
-const String baseUrl = 'https://6ad720f1f71f154ac487d451.mockapi.io/api/';
 
   final courseRepository = CourseRepository(CourseSupabaseService());
 
