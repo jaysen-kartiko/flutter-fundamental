@@ -6,8 +6,9 @@ import '../../core/models/course.dart';
 import '../widgets/course_card.dart';
 import '../course_detail_page.dart';
 import 'FavoritePage.dart';
-import '../../StudentInfo.dart'; // Pastikan StudentInfo diimpor dengan benar
+import '../../StudentInfo.dart';
 import '../widgets/error_view.dart';
+import 'editCoursePage.dart';
 
 class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
@@ -19,6 +20,51 @@ class CoursesPage extends StatelessWidget {
         builder: (_) => CourseDetailPage(courseId: course.id, course: course),
       ),
     );
+  }
+
+  void _konfirmasiHapus(BuildContext context, Course course) async {
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Konfirmasi Hapus'),
+          content: Text(
+            'Apakah Anda yakin ingin menghapus course "${course.title}"?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Hapus'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm != true) return;
+
+    final provider = context.read<CourseProvider>();
+    final success = await provider.deleteCourse(course.id, course.code);
+
+    if (!context.mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Course berhasil dihapus!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(provider.error ?? 'Gagal menghapus course')),
+      );
+    }
   }
 
   @override
@@ -67,11 +113,47 @@ class CoursesPage extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Text(
-                                '$studentId - $studentName',
+                                '$studentId\n$studentName',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                   color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const AddCoursePage(),
+                                ),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Card(
+                              elevation: 0,
+                              color: Colors.green.withOpacity(0.08),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.add, color: Colors.green),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Tambah Course',
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -179,11 +261,51 @@ class CoursesPage extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                           horizontal: isCompact ? 0 : 8.0,
                         ),
-                        child: CourseCard(
-                          course: courseItem,
-                          onTap: (courseData) {
-                            _bukaHalamanDetail(context, courseData);
-                          },
+                        child: Stack(
+                          children: [
+                            CourseCard(
+                              course: courseItem,
+                              onTap: (courseData) {
+                                _bukaHalamanDetail(context, courseData);
+                              },
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, size: 18),
+                                    color: Colors.blueAccent,
+                                    constraints: const BoxConstraints(),
+                                    padding: const EdgeInsets.all(4),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => editCoursePage(
+                                            course: courseItem,
+                                            courseId: courseItem.id,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    icon: const Icon(Icons.close, size: 18),
+                                    color: Colors.red,
+                                    constraints: const BoxConstraints(),
+                                    padding: const EdgeInsets.all(4),
+                                    onPressed: () {
+                                      _konfirmasiHapus(context, courseItem);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }, childCount: courses.length),
