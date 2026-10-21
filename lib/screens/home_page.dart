@@ -78,7 +78,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Course Explorer V2'),
+        title: const Text('Course Data Manager'),
         backgroundColor: Colors.blue,
       ),
       body: LayoutBuilder(

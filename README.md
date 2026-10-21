@@ -1,3 +1,24 @@
+## Deskripsi aplikasi
+
+# deskripsi 
+Aplikasi ini adalah aplikasi untuk memanajemen pembelajaran/course. Pengguna dapat melihat, menambah, mengedit, dan menghapus course. pengguna juga dapat memilih course yang menjadi favoritnya. 
+
+# cara menjalankan
+1. ketik di terminal: flutter run 
+2. pilih emulator 
+3. tunggu emulator aplikasi dijalankan sampai aplikasi bisa digunakan
+4. pilih bagian course pada area navigasi
+5. Pengguna dapat melihat, menambah, mengedit, dan menghapus course yang diinginkan
+6. pengguna dapat melihat detail dari course tersebut dengan menekannya
+7. pengguna juga dapat memilih course yang menjadi favoritnya. 
+
+# Arsitektur
+Menggunakan arsitektur mobile application
+Presentasion -> provider/viewmodel -> repository -> service/data source -> JSON/API/DB
+
+# Backend yang digunakan
+menggunakan database dan backend Supabase dengan dependency supabase_flutter
+
 # Tanggung Jawab singkat tiap folder
 
 - **`lib/`**: Folder utama untuk seluruh kode sumber aplikasi.
